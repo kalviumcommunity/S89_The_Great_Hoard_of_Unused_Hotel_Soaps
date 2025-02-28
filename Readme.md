@@ -83,6 +83,4 @@ This project is both a **hilarious concept** and a **practical software developm
 ## Contributing
 Feel free to fork this repository, submit pull requests, and add to this quirky project! Contributions that add more fun and humor are always welcome. 🚀
 
----
-## License
-This project is open-source under the [MIT License](LICENSE).
+
