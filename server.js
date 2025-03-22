@@ -10,6 +10,9 @@ app.get('/ping', (req, res) => {
 });
 
 
+
+
+
 app.get('/', (req, res) => {
   res.send('DB connected successfully!');
 });
