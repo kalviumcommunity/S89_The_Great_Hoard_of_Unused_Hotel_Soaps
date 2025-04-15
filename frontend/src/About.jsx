@@ -1,8 +1,16 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 
 const About = () => {
   return (
     <div style={{ padding: '20px', textAlign: 'center' }}>
+      <header style={{ marginBottom: '20px' }}>
+        <nav>
+          <Link to="/hotels" style={{ textDecoration: 'none', color: '#2a9d8f', fontSize: '1.2rem' }}>
+            View Hotel Cards
+          </Link>
+        </nav>
+      </header>
       <h1>The Great Hoard of Unused Hotel Soaps</h1>
       <p>
         Every day, millions of hotel guests use a soap bar once or twice before leaving it behind. 
