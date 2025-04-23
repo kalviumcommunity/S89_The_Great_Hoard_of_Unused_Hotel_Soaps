@@ -3,27 +3,15 @@ const router = express.Router();
 const Item = require("./schema");
 
 router.post('/items', async (req, res) => {
-  const { name, description } = req.body;
-
-  console.log('Request body:', req.body); // Debugging log
-
-  // Validate request body
-  if (!name || typeof name !== 'string' || name.trim() === '') {
-    return res.status(400).json({ message: "Name is required and must be a non-empty string" });
-  }
-  if (!description || typeof description !== 'string' || description.trim() === '') {
-    return res.status(400).json({ message: "Description is required and must be a non-empty string" });
-  }
-  console.log("first")
-
   try {
-    const item = new Item({ name, description });
+    const item = new Item(req.body);
     const savedItem = await item.save();
     res.status(201).json(savedItem);
   } catch (error) {
-    res.status(400).json({ message: error });
+    res.status(400).json({ message: error.message });
   }
 });
+
 
 router.get('/items', async (req, res) => {
   try {
