@@ -2,29 +2,49 @@ const express = require('express');
 const router = express.Router();
 const Item = require("./schema");
 
+// POST endpoint with inline validation
 router.post('/items', async (req, res) => {
   const { name, description } = req.body;
 
-  console.log('Request body:', req.body); // Debugging log
-
-  // Validate request body
+  // Inline validation
   if (!name || typeof name !== 'string' || name.trim() === '') {
     return res.status(400).json({ message: "Name is required and must be a non-empty string" });
   }
   if (!description || typeof description !== 'string' || description.trim() === '') {
     return res.status(400).json({ message: "Description is required and must be a non-empty string" });
   }
-  console.log("first")
 
   try {
     const item = new Item({ name, description });
     const savedItem = await item.save();
     res.status(201).json(savedItem);
   } catch (error) {
-    res.status(400).json({ message: error });
+    res.status(400).json({ message: error.message });
   }
 });
 
+// PUT endpoint with inline validation
+router.put('/items/:id', async (req, res) => {
+  const { name, description } = req.body;
+
+  // Inline validation
+  if (!name || typeof name !== 'string' || name.trim() === '') {
+    return res.status(400).json({ message: "Name is required and must be a non-empty string" });
+  }
+  if (!description || typeof description !== 'string' || description.trim() === '') {
+    return res.status(400).json({ message: "Description is required and must be a non-empty string" });
+  }
+
+  try {
+    const updatedItem = await Item.findByIdAndUpdate(req.params.id, { name, description }, { new: true });
+    if (!updatedItem) return res.status(404).json({ message: "Item not found" });
+    res.json(updatedItem);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// GET all items
 router.get('/items', async (req, res) => {
   try {
     const items = await Item.find();
@@ -34,7 +54,7 @@ router.get('/items', async (req, res) => {
   }
 });
 
-
+// GET a single item by ID
 router.get('/items/:id', async (req, res) => {
   try {
     const item = await Item.findById(req.params.id);
@@ -45,18 +65,7 @@ router.get('/items/:id', async (req, res) => {
   }
 });
 
-
-router.put('/items/:id', async (req, res) => {
-  try {
-    const updatedItem = await Item.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!updatedItem) return res.status(404).json({ message: "Item not found" });
-    res.json(updatedItem);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
-
+// DELETE an item by ID
 router.delete('/items/:id', async (req, res) => {
   try {
     const deletedItem = await Item.findByIdAndDelete(req.params.id);
