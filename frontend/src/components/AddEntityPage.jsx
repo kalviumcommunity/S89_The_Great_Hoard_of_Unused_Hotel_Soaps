@@ -1,9 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const AddEntityPage = () => {
-    const [entity, setEntity] = useState({ name: '', description: '' });
+    const [entity, setEntity] = useState({ name: '', description: '', created_by: '' });
     const [entities, setEntities] = useState([]);
-    const [loading, setLoading] = useState(false); // New loading state
+    const [users, setUsers] = useState([]); // List of users
+    const [selectedUser, setSelectedUser] = useState(''); // Selected user
+    const [loading, setLoading] = useState(false); // Loading state
+
+    // Fetch users (mocked for now)
+    useEffect(() => {
+        // Replace this with an API call to fetch users
+        setUsers(['User1', 'User2', 'User3']);
+    }, []);
+
+    // Fetch entities created by the selected user
+    useEffect(() => {
+        if (selectedUser) {
+            fetch(`http://localhost:3000/api/items?created_by=${selectedUser}`)
+                .then((res) => res.json())
+                .then((data) => setEntities(data))
+                .catch((err) => console.error('Error fetching entities:', err));
+        }
+    }, [selectedUser]);
 
     // Handle input changes
     const handleChange = (e) => {
@@ -37,7 +55,7 @@ const AddEntityPage = () => {
             console.log('New entity added:', newEntity);
 
             setEntities([...entities, newEntity]);
-            setEntity({ name: '', description: '' });
+            setEntity({ name: '', description: '', created_by: '' });
         } catch (error) {
             console.error('Error adding entity:', error);
         } finally {
@@ -65,14 +83,43 @@ const AddEntityPage = () => {
                     placeholder="Entity Description"
                     required
                 />
+                <select
+                    name="created_by"
+                    value={entity.created_by}
+                    onChange={handleChange}
+                    required
+                >
+                    <option value="">Select User</option>
+                    {users.map((user, index) => (
+                        <option key={index} value={user}>
+                            {user}
+                        </option>
+                    ))}
+                </select>
                 <button type="submit" disabled={loading}>
                     {loading ? 'Submitting...' : 'Add Entity'}
                 </button>
             </form>
+
+            <h2>Filter by User</h2>
+            <select
+                value={selectedUser}
+                onChange={(e) => setSelectedUser(e.target.value)}
+            >
+                <option value="">Select User</option>
+                {users.map((user, index) => (
+                    <option key={index} value={user}>
+                        {user}
+                    </option>
+                ))}
+            </select>
+
             <h2>Entities List</h2>
             <ul>
                 {entities.map((e, index) => (
-                    <li key={index}>{e.name} - {e.description}</li>
+                    <li key={index}>
+                        {e.name} - {e.description} (Created by: {e.created_by})
+                    </li>
                 ))}
             </ul>
         </div>

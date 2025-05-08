@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
-const itemSchema = new mongoose.Schema({
+// Check if the model is already compiled
+const Item = mongoose.models.Item || mongoose.model('Item', new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String },
-}, { timestamps: true });
-
-const Item = mongoose.model('Item', itemSchema);
+  created_by: { type: String, required: true },
+}, { timestamps: true }));
 
 module.exports = Item;
